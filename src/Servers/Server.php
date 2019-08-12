@@ -2,97 +2,9 @@
 
 namespace VizuaaLOG\Pterodactyl\Servers;
 
-class Server {
-    /**
-     * @var int
-     */
-    public $id;
+use VizuaaLOG\Pterodactyl\Resource;
 
-    /**
-     * @var int|null
-     */
-    public $external_id;
-
-    /**
-     * @var string
-     */
-    public $uuid;
-
-    /**
-     * @var string
-     */
-    public $identifier;
-    
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $description;
-
-    /**
-     * @var bool
-     */
-    public $suspended;
-
-    /**
-     * @var array
-     */
-    public $limits;
-
-    /**
-     * @var array
-     */
-    public $feature_limits;
-
-    /**
-     * @var int
-     */
-    public $user;
-
-    /**
-     * @var int
-     */
-    public $node;
-
-    /**
-     * @var int
-     */
-    public $allocation;
-
-    /**
-     * @var int
-     */
-    public $nest;
-
-    /**
-     * @var int
-     */
-    public $egg;
-
-    /**
-     * @var int
-     */
-    public $pack;
-
-    /**
-     * @var array
-     */
-    public $container;
-    
-    /**
-     * @var string
-     */
-    public $updated_at;
-
-    /**
-     * @var string
-     */
-    public $created_at;
-
+class Server extends Resource {
     public function update($values)
     {
 

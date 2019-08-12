@@ -24,7 +24,7 @@ class Pterodactyl {
      * The GuzzelHTTP Client instance
      * @var \GuzzleHttp\Client
      */
-    protected $http;
+    public $http;
 
     /**
      * Number of seconds before a request times out.
@@ -60,7 +60,7 @@ class Pterodactyl {
             ]
         ]);
 
-        $this->servers = new ServerManager($this->http);
+        $this->servers = new ServerManager($this);
     }
 
     /**
