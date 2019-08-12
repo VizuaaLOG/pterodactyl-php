@@ -7,7 +7,7 @@ use VizuaaLOG\Pterodactyl\Resource;
 class Server extends Resource {
     public function update($values)
     {
-
+        
     }
 
     public function updateBuild($values)
@@ -40,9 +40,14 @@ class Server extends Resource {
 
     }
 
+    /**
+     * Delete a server
+     * @param bool $force
+     * @
+     */
     public function delete($force = false)
     {
-
+        return $this->pterodactyl->servers->delete($this->id, $force);
     }
 
     public function databases()

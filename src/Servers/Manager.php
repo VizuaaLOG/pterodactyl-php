@@ -2,6 +2,9 @@
 
 namespace VizuaaLOG\Pterodactyl\Servers;
 
+use GuzzleHttp\Exception\ClientException;
+use VizuaaLOG\Pterodactyl\Exceptions\RequestException;
+
 use function GuzzleHttp\json_decode;
 
 class Manager {
@@ -11,9 +14,10 @@ class Manager {
      */
     protected $http;
 
-    public function __construct($http)
+    public function __construct($pterodactyl)
     {
-        $this->http = $http;
+        $this->pterodactyl = $pterodactyl;
+        $this->http = $pterodactyl->http;
     }
 
     /**
@@ -50,24 +54,52 @@ class Manager {
     }
 
     /**
-     * Get a single server object using it's external ID.
-     * @param int $server_id
+     * Create a new server
+     * @param array $values
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
      * @return \VizuaaLOG\Pterodactyl\Servers\Server
      */
-    public function getByExternalId($server_id)
+    public function create($values)
     {
         try {
-            $response = $this->http->request('GET', '/api/application/servers/external' . $server_id);
-        } catch(\GuzzleHttp\Exception\ClientException $e) {
-            return false;
+            $response = $this->http->request('POST', '/api/application/servers', [
+                'form_params' => $values
+            ]);
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
         }
-        
+
         return $this->convert($response);
     }
 
-    public function create($values)
+    /**
+     * Delete a server
+     * @var int|string $server_id
+     * @var bool $force
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return bool
+     */
+    public function delete($server_id, $force = false)
     {
+        $endpoint = '/api/application/servers/' . $server_id;
+        
+        if($force) {
+            $endpoint .= '/force';
+        }
 
+        try {
+            $response = $this->http->request('DELETE', $endpoint);
+
+            return true;
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
     }
 
     /**
@@ -83,52 +115,6 @@ class Manager {
             $json = json_decode($json->getBody(), true)['attributes'];
         }
 
-        $server = new Server();
-
-        $server->id = (int) $json['id'];
-        $server->external_id = $json['external_id'];
-        $server->uuid = $json['uuid'];
-        $server->identifier = $json['identifier'];
-        $server->name = $json['name'];
-        $server->description = $json['description'];
-        $server->suspended = (bool) $json['suspended'];
-
-        $server->limits = [
-            'memory' => (int) $json['limits']['memory'],
-            'swap' => (int) $json['limits']['swap'],
-            'disk' => (int) $json['limits']['disk'],
-            'io' => (int) $json['limits']['io'],
-            'cpu' => (int) $json['limits']['cpu'],
-        ];
-
-        $server->feature_limits = [
-            'databases' => (int) $json['feature_limits']['databases'],
-            'allocations' => (int) $json['feature_limits']['allocations'],
-        ];
-
-        $server->user = (int) $json['user'];
-        $server->node = (int) $json['node'];
-        $server->allocation = (int) $json['allocation'];
-        $server->nest = (int) $json['nest'];
-        $server->egg = (int) $json['egg'];
-        $server->pack = (int) $json['pack'];
-
-        $server->container = [
-            'startup_command' => $json['container']['startup_command'],
-            'image' => $json['container']['image'],
-            'installed' => (bool) $json['container']['installed'],
-            'environment' => [
-                'SERVER_JARFILE' => $json['container']['environment']['SERVER_JARFILE'] ?? '',
-                'VANILLA_VERSION' => $json['container']['environment']['VANILLA_VERSION'] ?? '',
-                'STARTUP' => $json['container']['environment']['STARTUP'] ?? '',
-                'P_SERVER_LOCATION' => $json['container']['environment']['P_SERVER_LOCATION'] ?? '',
-                'P_SERVER_UUID' => $json['container']['environment']['P_SERVER_UUID'] ?? '',
-            ]
-        ];
-
-        $server->updated_at = $json['updated_at'];
-        $server->created_at = $json['updated_at'];
-
-        return $server;
+        return new Server($json, $this->pterodactyl);
     }
 }
