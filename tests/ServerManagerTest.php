@@ -89,6 +89,89 @@ class ServerManagerTest extends TestCase {
         $this->assertEquals('Creation test', $server->name);
     }
 
+    public function test_a_server_can_be_updated()
+    {
+        $api = $this->createClient();
+
+        $server = $this->createServer($api, 'Update test');
+
+        $server = $server->update([
+            'name' => 'Updated name',
+            'description' => 'Update test'
+        ]);
+
+        $this->assertEquals('Updated name', $server->name);
+        $this->assertEquals('Update test', $server->description);
+
+        $server->delete();
+    }
+
+    public function test_a_servers_build_can_be_updated()
+    {
+        $api = $this->createClient();
+
+        $server = $this->createServer($api, 'Build update test');
+        
+        $server = $server->updateBuild([
+            "allocation" => $server->allocation,
+            "memory" => "1024",
+            "swap" => $server->limits['swap'],
+            "io" => $server->limits['io'],
+            "cpu" => $server->limits['cpu'],
+            "disk" => $server->limits['disk'],
+            "feature_limits" => $server->featureLimits
+        ]);
+
+        $this->assertEquals("1024", $server->limits['memory']);
+
+        $server->delete();
+    }
+
+    public function test_a_server_startup_can_be_updated()
+    {
+        $api = $this->createClient();
+
+        $server = $this->createServer($api, 'Startup update test');
+
+        $server = $server->updateStartup([
+            "startup" => "java -Xms128M -Xmx 1024M -jar server.jar",
+            "environment" => [
+                "DL_VERSION" => "1.12.2",
+                "SERVER_JARFILE" => "server.jar"
+            ],
+            "egg" => "15",
+            "image" => "quay.io/parkervcp/pterodactyl-images:debian_openjdk-8-jre",
+            "skip_scripts" => false
+        ]);
+
+        $this->assertEquals('java -Xms128M -Xmx 1024M -jar server.jar', $server->startup);
+
+        $server->delete();
+    }
+
+    public function test_a_server_can_be_suspended_and_unsuspended()
+    {
+        $api = $this->createClient();
+
+        $server = $this->createServer($api, 'Suspend test');
+
+        $this->assertTrue($server->suspend());
+        $this->assertTrue($server->unsuspend());
+
+        $server->delete();
+    }
+
+    public function test_a_server_can_be_reinstalled()
+    {
+        $api = $this->createClient();
+
+        $server = $this->createServer($api, 'Reinstall test');
+
+        $this->assertTrue($server->reinstall());
+
+        $server->delete();
+    }
+
     public function test_a_server_can_be_deleted()
     {
         $api = $this->createClient();

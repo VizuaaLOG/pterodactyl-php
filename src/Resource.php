@@ -21,7 +21,7 @@ class Resource {
      *
      * @return void
      */
-    private function fill($attributes)
+    protected function fill($attributes)
     {
         foreach ($attributes as $key => $value) {
             $key = $this->camelCase($key);

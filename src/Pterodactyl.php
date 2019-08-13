@@ -57,7 +57,8 @@ class Pterodactyl {
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->api_key,
                 'Content-Type' => 'application_json'
-            ]
+            ],
+            'timeout' => 30
         ]);
 
         $this->servers = new ServerManager($this);

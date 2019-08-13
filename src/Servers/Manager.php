@@ -3,7 +3,8 @@
 namespace VizuaaLOG\Pterodactyl\Servers;
 
 use GuzzleHttp\Exception\ClientException;
-use VizuaaLOG\Pterodactyl\Exceptions\RequestException;
+use GuzzleHttp\Exception\ServerException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
 
 use function GuzzleHttp\json_decode;
 
@@ -75,6 +76,99 @@ class Manager {
         return $this->convert($response);
     }
 
+    public function update($server_id, $values)
+    {
+        try {
+            $response = $this->http->request('PATCH', '/api/application/servers/' . $server_id . '/details', [
+                'form_params' => $values
+            ]);
+
+            return $this->convert($response, false);
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+    }
+
+    public function updateBuild($server_id, $values)
+    {
+        try {
+            $response = $this->http->request('PATCH', '/api/application/servers/' . $server_id . '/build', [
+                'form_params' => $values
+            ]);
+
+            return $this->convert($response, false);
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        } catch(ServerException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+    }
+
+    public function updateStartup($server_id, $values)
+    {
+        try {
+            $response = $this->http->request('PATCH', '/api/application/servers/' . $server_id . '/startup', [
+                'form_params' => $values
+            ]);
+
+            return $this->convert($response, false);
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+    }
+
+    public function rebuild($server_id)
+    {
+        try {
+            $response = $this->http->request('POST', '/api/application/servers/' . $server_id . '/rebuild');
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+
+        return true;
+    }
+
+    public function suspend($server_id)
+    {
+        try {
+            $this->http->request('POST', '/api/application/servers/' . $server_id . '/suspend');
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+
+        return true;
+    }
+
+    public function unsuspend($server_id)
+    {
+        try {
+            $this->http->request('POST', '/api/application/servers/' . $server_id . '/suspend');
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+
+        return true;
+    }
+
+    public function reinstall($server_id)
+    {
+        try {
+            $this->http->request('POST', '/api/application/servers/' . $server_id . '/reinstall');
+        } catch(ClientException $e) {
+            $error = json_decode($e->getResponse()->getBody());
+            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        }
+
+        return true;
+    }
+
     /**
      * Delete a server
      * @var int|string $server_id
@@ -107,7 +201,7 @@ class Manager {
      * @param array $response
      * @return \VizuaaLOG\Pterodactyl\Servers\Server
      */
-    protected function convert($json)
+    protected function convert($json, $createServer = true)
     {
         if(is_array($json)) {
             $json = $json['attributes'];
@@ -115,6 +209,10 @@ class Manager {
             $json = json_decode($json->getBody(), true)['attributes'];
         }
 
-        return new Server($json, $this->pterodactyl);
+        if($createServer) {
+            return new Server($json, $this->pterodactyl);
+        }
+
+        return $json;
     }
 }
