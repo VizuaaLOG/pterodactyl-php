@@ -28,7 +28,7 @@ class ServerManager extends Manager {
      */
     public function all()
     {
-        return $this->getRequest('/api/application/servers');
+        return $this->request('GET', '/api/application/servers');
     }
 
     /**
@@ -38,7 +38,7 @@ class ServerManager extends Manager {
      */
     public function get($server_id)
     {
-        return $this->getRequest('/api/application/servers/' . $server_id);
+        return $this->request('GET', '/api/application/servers/' . $server_id);
     }
 
     /**
@@ -51,7 +51,7 @@ class ServerManager extends Manager {
      */
     public function create($values)
     {
-        return $this->postRequest('/api/application/servers', $values);
+        return $this->request('POST', '/api/application/servers', $values);
     }
 
     /**
@@ -66,16 +66,7 @@ class ServerManager extends Manager {
      */
     public function update($server_id, $values)
     {
-        try {
-            $response = $this->http->request('PATCH', '/api/application/servers/' . $server_id . '/details', [
-                'form_params' => $values
-            ]);
-
-            return $this->convert($response, false);
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
+        return $this->request('PATCH', '/api/application/servers/' . $server_id . '/details', $values);
     }
 
     /**

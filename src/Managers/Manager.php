@@ -20,25 +20,16 @@ class Manager {
         $this->http = $this->pterodactyl->http;
     }
 
-    protected function getRequest($uri, $asResource = true)
+    protected function request($method, $uri, $values = null, $asResource = true)
     {
         try {
-            return $this->transformResponse($this->http->request('GET', $uri), $asResource);
-        } catch(ClientException $e) {
-            $this->throwException($e);
-        } catch(ServerException $e) {
-            $this->throwException($e);
-        }
-    }
+            if($method === 'GET') {
+                return $this->transformResponse($this->http->request($method, $uri), $asResource);
+            }
 
-    protected function postRequest($uri, $values)
-    {
-        try {
-            return $this->transformResponse(
-                $this->http->request('POST', $uri, [
-                    'form_params' => $values
-                ])
-            );
+            return $this->transformResponse($this->http->request($method, $uri, [
+                'form_params' => $values
+            ]), $asResource);
         } catch(ClientException $e) {
             $this->throwException($e);
         } catch(ServerException $e) {
