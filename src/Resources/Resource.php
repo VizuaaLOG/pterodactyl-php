@@ -1,6 +1,6 @@
 <?php
 
-namespace VizuaaLOG\Pterodactyl;
+namespace VizuaaLOG\Pterodactyl\Resources;
 
 class Resource {
     /**

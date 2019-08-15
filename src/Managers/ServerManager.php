@@ -1,24 +1,25 @@
 <?php
 
-namespace VizuaaLOG\Pterodactyl\Servers;
+namespace VizuaaLOG\Pterodactyl\Managers;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use VizuaaLOG\Pterodactyl\Resources\Server;
 use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
 
-use function GuzzleHttp\json_decode;
-
-class Manager {
+class ServerManager extends Manager {
     /**
      * An instance of the http client.
      * @var \VizuaaLOG\Pterodactyl\Pterodactyl
      */
     protected $http;
 
+    protected static $resource = Server::class;
+
     public function __construct($pterodactyl)
     {
         $this->pterodactyl = $pterodactyl;
-        $this->http = $pterodactyl->http;
+        $this->http = $this->pterodactyl->http;
     }
 
     /**
@@ -27,15 +28,7 @@ class Manager {
      */
     public function all()
     {
-        $response = $this->http->request('GET', '/api/application/servers');
-        $serversJson = json_decode($response->getBody(), true);
-        $servers = [];
-
-        foreach($serversJson['data'] as $serverJson) {
-            $servers[] = $this->convert($serverJson);
-        }
-
-        return $servers;
+        return $this->getRequest('/api/application/servers');
     }
 
     /**
@@ -45,13 +38,7 @@ class Manager {
      */
     public function get($server_id)
     {
-        try {
-            $response = $this->http->request('GET', '/api/application/servers/' . $server_id);
-        } catch(\GuzzleHttp\Exception\ClientException $e) {
-            return false;
-        }
-        
-        return $this->convert($response);
+        return $this->getRequest('/api/application/servers/' . $server_id);
     }
 
     /**
@@ -64,18 +51,19 @@ class Manager {
      */
     public function create($values)
     {
-        try {
-            $response = $this->http->request('POST', '/api/application/servers', [
-                'form_params' => $values
-            ]);
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
-
-        return $this->convert($response);
+        return $this->postRequest('/api/application/servers', $values);
     }
 
+    /**
+     * Update a server's configuration
+     * 
+     * @param int $server_id
+     * @param array $values
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return array
+     */
     public function update($server_id, $values)
     {
         try {
@@ -90,6 +78,16 @@ class Manager {
         }
     }
 
+    /**
+     * Update a server's build configuration
+     * 
+     * @param int $server_id
+     * @param array $values
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return array
+     */
     public function updateBuild($server_id, $values)
     {
         try {
@@ -107,6 +105,16 @@ class Manager {
         }
     }
 
+    /**
+     * Update a server's startup configuration
+     * 
+     * @param int $server_id
+     * @param array $values
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return array
+     */
     public function updateStartup($server_id, $values)
     {
         try {
@@ -120,7 +128,16 @@ class Manager {
             throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
         }
     }
-
+    
+    /**
+     * Trigger a server rebuilt
+     * 
+     * @param int $server_id
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return bool
+     */
     public function rebuild($server_id)
     {
         try {
@@ -133,6 +150,15 @@ class Manager {
         return true;
     }
 
+    /**
+     * Suspend a server
+     * 
+     * @param int $server_id
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return bool
+     */
     public function suspend($server_id)
     {
         try {
@@ -145,6 +171,15 @@ class Manager {
         return true;
     }
 
+    /**
+     * Unsupsend a server
+     * 
+     * @param int $server_id
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return bool
+     */
     public function unsuspend($server_id)
     {
         try {
@@ -157,6 +192,15 @@ class Manager {
         return true;
     }
 
+    /**
+     * Trigger a reinstall of a server
+     * 
+     * @param int $server_id
+     * 
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * 
+     * @return bool
+     */
     public function reinstall($server_id)
     {
         try {

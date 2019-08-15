@@ -3,7 +3,7 @@
 namespace VizuaaLOG\Pterodactyl;
 
 use GuzzleHttp\Client;
-use VizuaaLOG\Pterodactyl\Servers\Manager as ServerManager;
+use VizuaaLOG\Pterodactyl\Managers\ServerManager;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidApiKeyException;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidBaseUriException;
 
