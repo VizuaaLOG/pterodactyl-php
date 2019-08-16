@@ -2,29 +2,21 @@
 
 namespace VizuaaLOG\Pterodactyl\Managers;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
 use VizuaaLOG\Pterodactyl\Resources\Server;
-use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
 
-class ServerManager extends Manager {
+class ServerManager extends Manager
+{
     /**
-     * An instance of the http client.
-     * @var \VizuaaLOG\Pterodactyl\Pterodactyl
+     * @var string The resource this manager uses.
      */
-    protected $http;
-
     protected static $resource = Server::class;
-
-    public function __construct($pterodactyl)
-    {
-        $this->pterodactyl = $pterodactyl;
-        $this->http = $this->pterodactyl->http;
-    }
 
     /**
      * Get all servers available.
-     * @return array<\VizuaaLOG\Pterodactyl\Servers\Server>
+     *
+     * @return array<\VizuaaLOG\Pterodactyl\Resources\Server>
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function all()
     {
@@ -33,21 +25,27 @@ class ServerManager extends Manager {
 
     /**
      * Get a single server object.
-     * @param int $server_id
-     * @return \VizuaaLOG\Pterodactyl\Servers\Server
+     *
+     * @param int   $server_id
+     * @param array $includes
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Resources\Server
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
-    public function get($server_id)
+    public function get($server_id, $includes = [])
     {
-        return $this->request('GET', '/api/application/servers/' . $server_id);
+        return $this->request('GET', '/api/application/servers/' . $server_id, null, true, $includes);
     }
 
     /**
      * Create a new server
+     *
      * @param array $values
-     * 
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Resources\Server
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return \VizuaaLOG\Pterodactyl\Servers\Server
      */
     public function create($values)
     {
@@ -56,13 +54,14 @@ class ServerManager extends Manager {
 
     /**
      * Update a server's configuration
-     * 
-     * @param int $server_id
+     *
+     * @param int   $server_id
      * @param array $values
-     * 
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
+     *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function update($server_id, $values)
     {
@@ -71,183 +70,112 @@ class ServerManager extends Manager {
 
     /**
      * Update a server's build configuration
-     * 
-     * @param int $server_id
+     *
+     * @param int   $server_id
      * @param array $values
-     * 
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return array
      */
     public function updateBuild($server_id, $values)
     {
-        try {
-            $response = $this->http->request('PATCH', '/api/application/servers/' . $server_id . '/build', [
-                'form_params' => $values
-            ]);
-
-            return $this->convert($response, false);
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        } catch(ServerException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
+        return $this->request('PATCH', '/api/application/servers/' . $server_id . '/build', $values, false);
     }
 
     /**
      * Update a server's startup configuration
-     * 
-     * @param int $server_id
+     *
+     * @param int   $server_id
      * @param array $values
-     * 
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
+     *
      * @return array
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
      */
     public function updateStartup($server_id, $values)
     {
-        try {
-            $response = $this->http->request('PATCH', '/api/application/servers/' . $server_id . '/startup', [
-                'form_params' => $values
-            ]);
-
-            return $this->convert($response, false);
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
+        return $this->request('PATCH', '/api/application/servers/' . $server_id . '/startup', $values, false);
     }
-    
+
     /**
      * Trigger a server rebuilt
-     * 
+     *
      * @param int $server_id
-     * 
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
      */
     public function rebuild($server_id)
     {
-        try {
-            $response = $this->http->request('POST', '/api/application/servers/' . $server_id . '/rebuild');
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
-
-        return true;
+        return $this->request('POST', '/api/application/servers/' . $server_id . '/rebuild');
     }
 
     /**
      * Suspend a server
-     * 
+     *
      * @param int $server_id
-     * 
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
      */
     public function suspend($server_id)
     {
-        try {
-            $this->http->request('POST', '/api/application/servers/' . $server_id . '/suspend');
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
-
-        return true;
+        return $this->request('POST', '/api/application/servers/' . $server_id . '/suspend');
     }
 
     /**
-     * Unsupsend a server
-     * 
+     * Unsuspend a server
+     *
      * @param int $server_id
-     * 
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
      */
     public function unsuspend($server_id)
     {
-        try {
-            $this->http->request('POST', '/api/application/servers/' . $server_id . '/suspend');
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
-
-        return true;
+        return $this->request('POST', '/api/application/servers/' . $server_id . '/unsuspend');
     }
 
     /**
      * Trigger a reinstall of a server
-     * 
+     *
      * @param int $server_id
-     * 
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
      */
     public function reinstall($server_id)
     {
-        try {
-            $this->http->request('POST', '/api/application/servers/' . $server_id . '/reinstall');
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
-
-        return true;
+        return $this->request('POST', '/api/application/servers/' . $server_id . '/reinstall');
     }
 
     /**
      * Delete a server
-     * @var int|string $server_id
-     * @var bool $force
-     * 
+     *
+     * @param bool $force
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
-     * 
-     * @return bool
      */
     public function delete($server_id, $force = false)
     {
         $endpoint = '/api/application/servers/' . $server_id;
-        
-        if($force) {
+
+        if ($force) {
             $endpoint .= '/force';
         }
 
-        try {
-            $response = $this->http->request('DELETE', $endpoint);
-
-            return true;
-        } catch(ClientException $e) {
-            $error = json_decode($e->getResponse()->getBody());
-            throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
-        }
-    }
-
-    /**
-     * Convert a server JSON object into a Server class.
-     * @param array $response
-     * @return \VizuaaLOG\Pterodactyl\Servers\Server
-     */
-    protected function convert($json, $createServer = true)
-    {
-        if(is_array($json)) {
-            $json = $json['attributes'];
-        } else {
-            $json = json_decode($json->getBody(), true)['attributes'];
-        }
-
-        if($createServer) {
-            return new Server($json, $this->pterodactyl);
-        }
-
-        return $json;
+        return $this->request('DELETE', $endpoint);
     }
 }

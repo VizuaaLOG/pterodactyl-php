@@ -2,15 +2,24 @@
 
 namespace VizuaaLOG\Pterodactyl\Managers;
 
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Response;
+use VizuaaLOG\Pterodactyl\Pterodactyl;
 use GuzzleHttp\Exception\ServerException;
-use VizuaaLOG\Pterodactyl\Resources\Server;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
 
-class Manager {
+class Manager
+{
+    /**
+     * @var \VizuaaLOG\Pterodactyl\Pterodactyl
+     */
+    protected $pterodactyl;
+
     /**
      * An instance of the http client.
-     * @var \VizuaaLOG\Pterodactyl\Pterodactyl
+     *
+     * @var \GuzzleHttp\Client
      */
     protected $http;
 
@@ -20,19 +29,31 @@ class Manager {
         $this->http = $this->pterodactyl->http;
     }
 
-    protected function request($method, $uri, $values = null, $asResource = true)
+    /**
+     * Send a request to the Pterodactyl server.
+     *
+     * @param string $method
+     * @param string $uri
+     * @param null   $values
+     * @param bool   $asResource
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    protected function request($method, $uri, $values = null, $asResource = true, $includes = [])
     {
         try {
-            if($method === 'GET') {
-                return $this->transformResponse($this->http->request($method, $uri), $asResource);
+            if ($method === 'GET') {
+                return $this->transformResponse($this->http->request($method, $uri . '?include=' . implode(',', $includes)), $asResource);
             }
 
             return $this->transformResponse($this->http->request($method, $uri, [
-                'form_params' => $values
+                'form_params' => $values,
             ]), $asResource);
-        } catch(ClientException $e) {
+        } catch (ClientException $e) {
             $this->throwException($e);
-        } catch(ServerException $e) {
+        } catch (ServerException $e) {
             $this->throwException($e);
         }
     }
