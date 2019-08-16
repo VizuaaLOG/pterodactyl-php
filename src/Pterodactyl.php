@@ -7,44 +7,46 @@ use VizuaaLOG\Pterodactyl\Managers\ServerManager;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidApiKeyException;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidBaseUriException;
 
-class Pterodactyl {
+class Pterodactyl
+{
     /**
-     * API Key used for requests.
-     * @var string
-     */
-    protected $api_key;
-
-    /**
-     * Base URI for API requests
-     * @var string
-     */
-    protected $base_uri;
-
-    /**
-     * The GuzzelHTTP Client instance
+     * The GuzzleHTTP Client instance
+     *
      * @var \GuzzleHttp\Client
      */
     public $http;
-
+    /**
+     * Instance of the server manager
+     *
+     * @var \VizuaaLOG\Pterodactyl\Managers\ServerManager
+     */
+    public $servers;
+    /**
+     * API Key used for requests.
+     *
+     * @var string
+     */
+    protected $api_key;
+    /**
+     * Base URI for API requests
+     *
+     * @var string
+     */
+    protected $base_uri;
     /**
      * Number of seconds before a request times out.
+     *
      * @var int
      */
     protected $timeout;
 
-    /**
-     * Instance of the server manager
-     * @var \VizuaaLOG\Pterodactyl\Servers\Manager
-     */
-    public $servers;
-
     public function __construct($api_key, $base_uri, $client = null)
     {
-        if(!$api_key) {
+        if (!$api_key) {
             throw new InvalidApiKeyException();
         }
 
-        if(!$base_uri) {
+        if (!$base_uri) {
             throw new InvalidBaseUriException();
         }
 
@@ -56,9 +58,9 @@ class Pterodactyl {
             'headers' => [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->api_key,
-                'Content-Type' => 'application_json'
+                'Content-Type' => 'application_json',
             ],
-            'timeout' => 30
+            'timeout' => 30,
         ]);
 
         $this->servers = new ServerManager($this);
@@ -66,7 +68,9 @@ class Pterodactyl {
 
     /**
      * Set the API key to a new one.
+     *
      * @param string $api_key
+     *
      * @return void
      */
     public function setApiKey($api_key)
@@ -76,7 +80,9 @@ class Pterodactyl {
 
     /**
      * Set the base uri to a new value.
+     *
      * @param string $base_uri
+     *
      * @return void
      */
     public function setBaseUri($base_uri)
@@ -86,7 +92,9 @@ class Pterodactyl {
 
     /**
      * Set the client to a new GuzzleHTTP Client instance.
+     *
      * @param \GuzzleHttp\Client $client
+     *
      * @return void
      */
     public function setClient(Client $client)
