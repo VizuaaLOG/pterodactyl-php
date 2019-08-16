@@ -2,12 +2,21 @@
 
 namespace VizuaaLOG\Pterodactyl\Resources;
 
-class Resource {
+use VizuaaLOG\Pterodactyl\Pterodactyl;
+
+class Resource
+{
+    /**
+     * @var \VizuaaLOG\Pterodactyl\Pterodactyl|null
+     */
+    protected $pterodactyl;
+
     /**
      * Create a new resource instance.
      *
-     * @param  array $attributes
-     * @param  Pterodactyl $pterodactyl
+     * @param array       $attributes
+     * @param Pterodactyl $pterodactyl
+     *
      * @return void
      */
     public function __construct($attributes = [], $pterodactyl = null)
@@ -18,6 +27,8 @@ class Resource {
 
     /**
      * Fill the resource with the array of attributes.
+     *
+     * @param array $attributes
      *
      * @return void
      */
@@ -33,6 +44,8 @@ class Resource {
      * Convert the key name to camel case.
      *
      * @param $key
+     *
+     * @return string
      */
     private function camelCase($key)
     {
