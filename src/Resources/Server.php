@@ -2,15 +2,20 @@
 
 namespace VizuaaLOG\Pterodactyl\Resources;
 
-class Server extends Resource {
+class Server extends Resource
+{
     /**
      * Update an existing server's configuration
+     *
      * @param array $values
+     *
      * @return \VizuaaLOG\Pterodactyl\Resources\Server
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function update($values)
     {
-        if(!isset($values['user'])) {
+        if (!isset($values['user'])) {
             $values['user'] = $this->user;
         }
 
@@ -21,8 +26,12 @@ class Server extends Resource {
 
     /**
      * Update an existing server's build configuration
+     *
      * @param array $values
+     *
      * @return \VizuaaLOG\Pterodactyl\Resources\Server
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function updateBuild($values)
     {
@@ -48,9 +57,25 @@ class Server extends Resource {
     }
 
     /**
+     * Trigger a rebuild of the server
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function rebuild()
+    {
+        return $this->pterodactyl->servers->rebuild($this->id);
+    }
+
+    /**
      * Update an existing server's startup configuration
+     *
      * @param array $values
+     *
      * @return \VizuaaLOG\Pterodactyl\Resources\Server
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function updateStartup($values)
     {
@@ -61,7 +86,10 @@ class Server extends Resource {
 
     /**
      * Suspend a server
-     * @return bool
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function suspend()
     {
@@ -70,7 +98,10 @@ class Server extends Resource {
 
     /**
      * Unsuspend a server
-     * @return bool
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function unsuspend()
     {
@@ -79,7 +110,10 @@ class Server extends Resource {
 
     /**
      * Trigger a reinstall of the server
-     * @return bool
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function reinstall()
     {
@@ -87,18 +121,13 @@ class Server extends Resource {
     }
 
     /**
-     * Trigger a rebuild of the server
-     * @return bool
-     */
-    public function rebuild()
-    {
-        return $this->pterodactyl->servers->rebuild($this->id);
-    }
-
-    /**
      * Delete a server
+     *
      * @param bool $force
-     * @return bool
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function delete($force = false)
     {
