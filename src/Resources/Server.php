@@ -26,6 +26,21 @@ class Server extends Resource {
      */
     public function updateBuild($values)
     {
+        // The API requires all of these values. Set them to the current values
+        // if they are not supplied.
+        $values = array_merge([
+            "allocation" => $this->allocation,
+            "memory" => $this->limits['memory'],
+            "swap" => $this->limits['swap'],
+            "io" => $this->limits['io'],
+            "cpu" => $this->limits['cpu'],
+            "disk" => $this->limits['disk'],
+            "feature_limits" => [
+                "databases" => $this->featureLimits['databases'],
+                "allocations" => $this->featureLimits['allocations']
+            ]
+        ], $values);
+
         $this->fill($this->pterodactyl->servers->updateBuild($this->id, $values));
         $this->rebuild();
 
