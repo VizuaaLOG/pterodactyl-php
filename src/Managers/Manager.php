@@ -37,40 +37,67 @@ class Manager {
         }
     }
 
-    public function throwException($e)
+    /**
+     * Convert a guzzle response into the correct resources
+     *
+     * @param \GuzzleHttp\Psr7\Response $response
+     *
+     * @return \VizuaaLOG\Pterodactyl\Managers\ServerManager|array
+     */
+    protected function transformResponse(Response $response)
     {
-        $error = json_decode($e->getResponse()->getBody());
-        throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
+        $json = json_decode($response->getBody()->getContents(), true);
+
+        if(empty($json)) {
+            return [];
+        }
+
+        return $this->transformObject($json);
     }
 
     /**
-     * Convert a guzzle response into the correct resources
-     * @param array $response
-     * @param bool $createResource
-     * @return \VizuaaLOG\Pterodactyl\Servers\Server|array
+     * Transform an API response.
+     *
+     * @param $object
+     * @param $createResource
+     *
+     * @return array|\VizuaaLOG\Pterodactyl\Resources\Server
      */
-    protected function transformResponse($response, $createResource = true)
+    protected function transformObject($object)
     {
-        $json = json_decode($response->getBody()->getContents());
         $output = [];
-    
-        if($json->object == 'list') {
-            foreach($json->data as $jsonObject) {
-                $output[] = $this->transformObject($jsonObject, $createResource);
+
+        if($object['object'] === 'list') {
+            foreach($object['data'] as $record) {
+                $output[] = $this->transformObject($record);
             }
 
             return $output;
         }
 
-        return $this->transformObject($json, $createResource);
+        $relationships = [];
+
+        // Process the relationships
+        if(isset($object['attributes']['relationships'])) {
+            $relationships = $object['attributes']['relationships'];
+
+            unset($object['attributes']['relationships']);
+        }
+
+        $resourceClass = '\\VizuaaLOG\\Pterodactyl\\Resources\\' . ucwords($object['object']);
+
+        $resource = new $resourceClass($object['attributes'], $this->pterodactyl);
+
+        foreach($relationships as $key => $value) {
+            $resource->$key = $this->transformObject($value);
+        }
+
+        return $resource;
     }
 
-    protected function transformObject($object, $createResource)
+    public function throwException(BadResponseException $e)
     {
-        if($createResource) {
-            return new static::$resource($object->attributes, $this->pterodactyl);
-        }
-        
-        return $object->attributes;
+        $error = json_decode($e->getResponse()->getBody());
+        throw new PterodactylRequestException($error->errors[0]->code . ': ' . $error->errors[0]->detail);
     }
 }
