@@ -45,12 +45,12 @@ class Manager
     {
         try {
             if ($method === 'GET') {
-                return $this->transformResponse($this->http->request($method, $uri . '?include=' . implode(',', $includes)), $asResource);
+                return $this->transformResponse($this->http->request($method, $uri . '?include=' . implode(',', $includes)));
             }
 
             return $this->transformResponse($this->http->request($method, $uri, [
                 'form_params' => $values,
-            ]), $asResource);
+            ]));
         } catch (ClientException $e) {
             $this->throwException($e);
         } catch (ServerException $e) {
