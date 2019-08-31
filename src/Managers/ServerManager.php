@@ -29,13 +29,21 @@ class ServerManager extends Manager
      * @param int   $server_id
      * @param array $includes
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Resources\Server
+     * @return bool|array|\VizuaaLOG\Pterodactyl\Resources\Server
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
      */
     public function get($server_id, $includes = [])
     {
-        return $this->request('GET', '/api/application/servers/' . $server_id, null, true, $includes);
+        try {
+            return $this->request('GET', '/api/application/servers/' . $server_id, null, true, $includes);
+        } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
+            if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
+                return false;
+            }
+
+            throw $exception;
+        }
     }
 
     /**
