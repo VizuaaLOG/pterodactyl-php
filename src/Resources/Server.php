@@ -121,6 +121,78 @@ class Server extends Resource
     }
 
     /**
+     * Start this server
+     *
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function start()
+    {
+        $this->pterodactyl->servers->start($this->identifier);
+    }
+
+    /**
+     * Stop this server
+     *
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function stop()
+    {
+        $this->pterodactyl->servers->stop($this->identifier);
+    }
+
+    /**
+     * Stop this server
+     *
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function restart()
+    {
+        $this->pterodactyl->servers->restart($this->identifier);
+    }
+
+    /**
+     * Stop this server
+     *
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function kill()
+    {
+        $this->pterodactyl->servers->kill($this->identifier);
+    }
+
+    /**
+     * Get this server's utilization
+     *
+     * @return Stats|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function utilization()
+    {
+        return $this->pterodactyl->servers->utilization($this->identifier);
+    }
+
+    /**
+     * Send a command to the server.
+     *
+     * @param string $command
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function sendCommand($command)
+    {
+        $this->pterodactyl->servers->sendCommand($this->identifier, $command);
+    }
+
+    /**
      * Delete a server
      *
      * @param bool $force

@@ -20,7 +20,11 @@ class ServerManager extends Manager
      */
     public function all()
     {
-        return $this->request('GET', '/api/application/servers');
+        if($this->pterodactyl->api_type === 'client') {
+            return $this->request('GET', '/api/client');
+        }
+
+        return $this->request('GET', '/api/' . $this->pterodactyl->api_type . '/servers');
     }
 
     /**
@@ -36,7 +40,7 @@ class ServerManager extends Manager
     public function get($server_id, $includes = [])
     {
         try {
-            return $this->request('GET', '/api/application/servers/' . $server_id, null, true, $includes);
+            return $this->request('GET', '/api/' . $this->pterodactyl->api_type . '/servers/' . $server_id, null, true, $includes);
         } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;
@@ -165,6 +169,85 @@ class ServerManager extends Manager
     public function reinstall($server_id)
     {
         return $this->request('POST', '/api/application/servers/' . $server_id . '/reinstall');
+    }
+
+    /**
+     * Start a server
+     *
+     * @param string $server_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function start($server_id)
+    {
+        return $this->request('POST', '/api/client/servers/' . $server_id . '/power', ['signal' => 'start']);
+    }
+
+    /**
+     * Stop a server
+     *
+     * @param string $server_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function stop($server_id)
+    {
+        return $this->request('POST', '/api/client/servers/' . $server_id . '/power', ['signal' => 'stop']);
+    }
+
+    /**
+     * Restart a server
+     *
+     * @param string $server_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function restart($server_id)
+    {
+        return $this->request('POST', '/api/client/servers/' . $server_id . '/power', ['signal' => 'restart']);
+    }
+
+    /**
+     * Kill a server
+     *
+     * @param string $server_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function kill($server_id)
+    {
+        return $this->request('POST', '/api/client/servers/' . $server_id . '/power', ['signal' => 'kill']);
+    }
+
+    /**
+     * Get a server's utilization
+     *
+     * @param string $server_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function utilization($server_id)
+    {
+        return $this->request('GET', '/api/client/servers/' . $server_id . '/utilization');
+    }
+
+    /**
+     * Get a server's utilization
+     *
+     * @param string $server_id
+     * @param string $command
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function sendCommand($server_id, $command)
+    {
+        return $this->request('POST', '/api/client/servers/' . $server_id . '/command', [ 'command' => $command ]);
     }
 
     /**

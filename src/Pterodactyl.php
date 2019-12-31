@@ -40,7 +40,10 @@ class Pterodactyl
      */
     protected $timeout;
 
-    public function __construct($api_key, $base_uri, $client = null)
+    /** @var string */
+    public $api_type;
+
+    public function __construct($api_key, $base_uri, $type = 'application')
     {
         if (!$api_key) {
             throw new InvalidApiKeyException();
@@ -53,15 +56,17 @@ class Pterodactyl
         $this->api_key = $api_key;
         $this->base_uri = $base_uri;
 
-        $this->http = $client ?: new Client([
+        $this->http = new Client([
             'base_uri' => $this->base_uri,
             'headers' => [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->api_key,
-                'Content-Type' => 'application_json',
+                'Content-Type' => 'application/json',
             ],
             'timeout' => 30,
         ]);
+
+        $this->api_type = $type;
 
         $this->servers = new ServerManager($this);
     }
