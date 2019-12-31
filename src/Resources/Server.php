@@ -15,11 +15,14 @@ class Server extends Resource
      */
     public function update($values)
     {
-        if (!isset($values['user'])) {
-            $values['user'] = $this->user;
-        }
+        // Setup the base update payload based on what the panel requires, these will then be merged
+        // with what has been provided.
+        $base = [
+            'name' => $this->name,
+            'user' => $this->user,
+        ];
 
-        $this->fill($this->pterodactyl->servers->update($this->id, $values));
+        $this->fill($this->pterodactyl->servers->update($this->id, array_merge_recursive_distinct($base, $values)));
 
         return $this;
     }
@@ -35,22 +38,15 @@ class Server extends Resource
      */
     public function updateBuild($values)
     {
-        // The API requires all of these values. Set them to the current values
-        // if they are not supplied.
-        $values = array_merge([
+        // Setup the base update payload based on what the panel requires, these will then be merged
+        // with what has been provided.
+        $base = [
             "allocation" => $this->allocation,
-            "memory" => $this->limits['memory'],
-            "swap" => $this->limits['swap'],
-            "io" => $this->limits['io'],
-            "cpu" => $this->limits['cpu'],
-            "disk" => $this->limits['disk'],
-            "feature_limits" => [
-                "databases" => $this->featureLimits['databases'],
-                "allocations" => $this->featureLimits['allocations']
-            ]
-        ], $values);
+            "limits" => $this->limits,
+            "feature_limits" => $this->featureLimits,
+        ];
 
-        $this->fill($this->pterodactyl->servers->updateBuild($this->id, $values));
+        $this->fill($this->pterodactyl->servers->updateBuild($this->id, array_merge_recursive_distinct($base, $values)));
         $this->rebuild();
 
         return $this;
@@ -79,7 +75,16 @@ class Server extends Resource
      */
     public function updateStartup($values)
     {
-        $this->fill($this->pterodactyl->servers->updateStartup($this->id, $values));
+        // Setup the base update payload based on what the panel requires, these will then be merged
+        // with what has been provided.
+        $base = [
+            "startup" => $this->container['startup_command'],
+            "egg" => $this->egg,
+            "image" => $this->container['image'],
+            "environment" => $this->container['environment']
+        ];
+
+        $this->fill($this->pterodactyl->servers->updateStartup($this->id, array_merge_recursive_distinct($base, $values)));
 
         return $this;
     }

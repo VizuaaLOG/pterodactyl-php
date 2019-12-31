@@ -15,7 +15,27 @@ class Node extends Resource
      */
     public function update($values)
     {
-        $this->fill($this->pterodactyl->nodes->update($this->id, $values));
+        // Setup the base update payload based on what the panel requires, these will then be merged
+        // with what has been provided.
+        $base = [
+            'name' => $this->name,
+            'location_id' => $this->locationId,
+            'public' => $this->public,
+            'fqdn' => $this->fqdn,
+            'scheme' => $this->scheme,
+            'behind_proxy' => $this->behindProxy,
+            'memory' => $this->memory,
+            'memory_overallocate' => $this->memoryOverallocate,
+            'disk' => $this->disk,
+            'disk_overallocate' => $this->diskOverallocate,
+            'daemon_base' => $this->daemonBase,
+            'daemon_sftp' => $this->daemonSftp,
+            'daemon_listen' => $this->daemonListen,
+            'maintenance_mode' => $this->maintenanceMode,
+            'upload_size' => $this->uploadSize,
+        ];
+
+        $this->fill($this->pterodactyl->nodes->update($this->id, array_merge_recursive_distinct($base, $values)));
 
         return $this;
     }
