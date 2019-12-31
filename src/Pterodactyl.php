@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use VizuaaLOG\Pterodactyl\Managers\ServerManager;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidApiKeyException;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidBaseUriException;
+use VizuaaLOG\Pterodactyl\Managers\UserManager;
 
 class Pterodactyl
 {
@@ -15,24 +16,35 @@ class Pterodactyl
      * @var \GuzzleHttp\Client
      */
     public $http;
+
     /**
      * Instance of the server manager
      *
-     * @var \VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @var ServerManager
      */
     public $servers;
+
+    /**
+     * Instance of the user manager
+     *
+     * @var UserManager
+     */
+    public $users;
+
     /**
      * API Key used for requests.
      *
      * @var string
      */
     protected $api_key;
+
     /**
      * Base URI for API requests
      *
      * @var string
      */
     protected $base_uri;
+
     /**
      * Number of seconds before a request times out.
      *
@@ -69,6 +81,7 @@ class Pterodactyl
         $this->api_type = $type;
 
         $this->servers = new ServerManager($this);
+        $this->users = new UserManager($this);
     }
 
     /**
