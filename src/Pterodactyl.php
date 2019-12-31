@@ -3,6 +3,7 @@
 namespace VizuaaLOG\Pterodactyl;
 
 use GuzzleHttp\Client;
+use VizuaaLOG\Pterodactyl\Managers\NodeManager;
 use VizuaaLOG\Pterodactyl\Managers\ServerManager;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidApiKeyException;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidBaseUriException;
@@ -30,6 +31,13 @@ class Pterodactyl
      * @var UserManager
      */
     public $users;
+
+    /**
+     * Instance of the node manager
+     *
+     * @var NodeManager
+     */
+    public $nodes;
 
     /**
      * API Key used for requests.
@@ -82,6 +90,7 @@ class Pterodactyl
 
         $this->servers = new ServerManager($this);
         $this->users = new UserManager($this);
+        $this->nodes = new NodeManager($this);
     }
 
     /**
