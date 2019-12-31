@@ -105,7 +105,7 @@ class Manager
             unset($object['attributes']['relationships']);
         }
 
-        $resourceClass = '\\VizuaaLOG\\Pterodactyl\\Resources\\' . ucwords($object['object']);
+        $resourceClass = '\\VizuaaLOG\\Pterodactyl\\Resources\\' . str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $object['object'])));
 
         $resource = new $resourceClass($object['attributes'], $this->pterodactyl);
 
