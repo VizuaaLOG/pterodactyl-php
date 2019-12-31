@@ -193,6 +193,32 @@ class Server extends Resource
     }
 
     /**
+     * Get this server's databases.
+     *
+     * @return Database|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function databases()
+    {
+        return $this->pterodactyl->servers->databases($this->id);
+    }
+
+    /**
+     * Get this server's databases.
+     *
+     * @param int $database_id
+     *
+     * @return Database|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function database($database_id)
+    {
+        return $this->pterodactyl->servers->database($this->id, $database_id);
+    }
+
+    /**
      * Delete a server
      *
      * @param bool $force

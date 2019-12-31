@@ -30,7 +30,7 @@ class ServerManager extends Manager
     /**
      * Get a single server object.
      *
-     * @param int   $server_id
+     * @param int|string $server_id
      * @param array $includes
      *
      * @return bool|array|\VizuaaLOG\Pterodactyl\Resources\Server
@@ -41,6 +41,29 @@ class ServerManager extends Manager
     {
         try {
             return $this->request('GET', '/api/' . $this->pterodactyl->api_type . '/servers/' . $server_id, null, true, $includes);
+        } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
+            if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
+                return false;
+            }
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * Get a single server object using the external id.
+     *
+     * @param mixed $external_id
+     * @param array $includes
+     *
+     * @return bool|array|\VizuaaLOG\Pterodactyl\Resources\Server
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function getByExternalId($external_id, $includes = [])
+    {
+        try {
+            return $this->request('GET', '/api/application/servers/external/' . $external_id, null, true, $includes);
         } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;
@@ -237,7 +260,7 @@ class ServerManager extends Manager
     }
 
     /**
-     * Get a server's utilization
+     * Send a command to a server.
      *
      * @param string $server_id
      * @param string $command
@@ -251,8 +274,44 @@ class ServerManager extends Manager
     }
 
     /**
+     * Get a server's databases
+     *
+     * @param int $server_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function databases($server_id)
+    {
+        return $this->request('GET', '/api/application/servers/' . $server_id . '/databases', null, true);
+    }
+
+    /**
+     * Get a server's database
+     *
+     * @param int $server_id
+     * @param int $database_id
+     * @return array|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function database($server_id, $database_id)
+    {
+        try {
+            return $this->request('GET', '/api/application/servers/' . $server_id . '/databases/' . $database_id, null, true);
+        } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
+            if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
+                return false;
+            }
+
+            throw $exception;
+        }
+    }
+
+    /**
      * Delete a server
      *
+     * @param int $server_id
      * @param bool $force
      *
      * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
