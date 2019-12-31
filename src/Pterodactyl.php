@@ -4,6 +4,7 @@ namespace VizuaaLOG\Pterodactyl;
 
 use GuzzleHttp\Client;
 use VizuaaLOG\Pterodactyl\Managers\LocationManager;
+use VizuaaLOG\Pterodactyl\Managers\NestManager;
 use VizuaaLOG\Pterodactyl\Managers\NodeManager;
 use VizuaaLOG\Pterodactyl\Managers\ServerManager;
 use VizuaaLOG\Pterodactyl\Exceptions\InvalidApiKeyException;
@@ -46,6 +47,13 @@ class Pterodactyl
      * @var LocationManager
      */
     public $locations;
+
+    /**
+     * Instance of the nest manager
+     *
+     * @var NestManager
+     */
+    public $nests;
 
     /**
      * API Key used for requests.
@@ -100,6 +108,7 @@ class Pterodactyl
         $this->users = new UserManager($this);
         $this->nodes = new NodeManager($this);
         $this->locations = new LocationManager($this);
+        $this->nests = new NestManager($this);
     }
 
     /**
