@@ -224,6 +224,48 @@ class Server extends Resource
     }
 
     /**
+     * Create a database for this server
+     *
+     * @param array $values
+     *
+     * @return Database|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function createDatabase($values)
+    {
+        return $this->pterodactyl->servers->createDatabase($this->id, $values);
+    }
+
+    /**
+     * Reset a database password
+     *
+     * @param int $database_id
+     *
+     * @return null|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function resetDatabasePassword($database_id)
+    {
+        return $this->pterodactyl->servers->resetDatabasePassword($this->id, $database_id);
+    }
+
+    /**
+     * Delete a database
+     *
+     * @param int $database_id
+     *
+     * @return null|\VizuaaLOG\Pterodactyl\Managers\ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function deleteDatabase($database_id)
+    {
+        return $this->pterodactyl->servers->deleteDatabase($this->id, $database_id);
+    }
+
+    /**
      * Delete a server
      *
      * @param bool $force

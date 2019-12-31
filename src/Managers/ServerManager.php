@@ -309,6 +309,51 @@ class ServerManager extends Manager
     }
 
     /**
+     * Create a new database for the server
+     *
+     * @param int $server_id
+     * @param array $values
+     *
+     * @return Database|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function createDatabase($server_id, $values)
+    {
+        return $this->request('POST', '/api/application/servers/' . $server_id . '/databases', $values, true);
+    }
+
+    /**
+     * Reset a database's password
+     *
+     * @param int $server_id
+     * @param int $database_id
+     *
+     * @return Database|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function resetDatabasePassword($server_id, $database_id)
+    {
+        return $this->request('POST', '/api/application/servers/' . $server_id . '/databases/' . $database_id . '/reset-password');
+    }
+
+    /**
+     * Delete a database
+     *
+     * @param int $server_id
+     * @param int $database_id
+     *
+     * @return null|ServerManager
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     */
+    public function deleteDatabase($server_id, $database_id)
+    {
+        return $this->request('DELETE', '/api/application/servers/' . $server_id . '/databases/' . $database_id);
+    }
+
+    /**
      * Delete a server
      *
      * @param int $server_id
