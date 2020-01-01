@@ -1,5 +1,5 @@
 # Pterodactyl PHP
-Pterodactyl PHP is an unofficial PHP API client for the Pterodactyl game panel. It offers an object orientated approach with a 'smarter' may of performing updates. This package was primarily written for the needs of a project, but I have tried to keep it as generic as I can to offer flexibility for others to use it as well.
+Pterodactyl PHP is an unofficial PHP API client for the Pterodactyl game panel. It offers an object orientated approach with a 'smarter' way of performing updates. This package was primarily written for the needs of a project, but I have tried to keep it as generic as I can to offer flexibility for others to use it as well.
 
 **This has been tested with Pterodactyl 0.7.16**
 
