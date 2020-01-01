@@ -224,15 +224,16 @@ class Server extends Resource
      * Get this server's databases.
      *
      * @param int $database_id
+     * @param array $includes
      *
      * @return ServerDatabase
      *
      * @throws GuzzleException
      * @throws PterodactylRequestException
      */
-    public function database($database_id)
+    public function database($database_id, $includes = [])
     {
-        return $this->pterodactyl->servers->database($this->id, $database_id);
+        return $this->pterodactyl->servers->database($this->id, $database_id, $includes);
     }
 
     /**

@@ -66,15 +66,16 @@ class NestManager extends Manager
      *
      * @param int $nest_id
      * @param int $egg_id
+     * @param array $includes
      *
      * @return Egg|false
      * @throws GuzzleException
      * @throws PterodactylRequestException
      */
-    public function egg($nest_id, $egg_id)
+    public function egg($nest_id, $egg_id, $includes = ['variables'])
     {
         try {
-            return $this->request('GET', '/api/application/nests/' . $nest_id . '/eggs/' . $egg_id, null, true, ['variables']);
+            return $this->request('GET', '/api/application/nests/' . $nest_id . '/eggs/' . $egg_id, null, true, $includes);
         } catch(PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;

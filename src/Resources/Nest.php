@@ -24,14 +24,15 @@ class Nest extends Resource
      * Get an egg from this nest.
      *
      * @param int $egg_id
+     * @param array $includes
      *
      * @return Egg
      *
      * @throws GuzzleException
      * @throws PterodactylRequestException
      */
-    public function egg($egg_id)
+    public function egg($egg_id, $includes = ['variables'])
     {
-        return $this->pterodactyl->nests->egg($this->id, $egg_id);
+        return $this->pterodactyl->nests->egg($this->id, $egg_id, $includes);
     }
 }

@@ -85,12 +85,29 @@ class Manager
     {
         $output = [];
 
+        // Convert a list resource to an array
         if($object['object'] === 'list') {
             foreach($object['data'] as $record) {
                 $output[] = $this->transformObject($record);
             }
 
             return $output;
+        }
+
+        // If the resource is database_password just return the password field rather than creating an object
+        if($object['object'] === 'database_password') {
+            return $object['attributes']['password'];
+        }
+
+        // When fetching databases via the server's includes the name of the database is different from the endpoint
+        // map it to the correct resource
+        if($object['object'] === 'databases') {
+            $object['object'] = 'server_database';
+        }
+
+        // Map a null_resource to null
+        if($object['object'] === 'null_resource') {
+            return null;
         }
 
         $relationships = [];

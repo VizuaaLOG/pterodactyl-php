@@ -360,16 +360,17 @@ class ServerManager extends Manager
      *
      * @param int $server_id
      * @param int $database_id
+     * @param array $includes
      *
      * @return ServerDatabase
      *
      * @throws GuzzleException
      * @throws PterodactylRequestException
      */
-    public function database($server_id, $database_id)
+    public function database($server_id, $database_id, $includes)
     {
         try {
-            return $this->request('GET', '/api/application/servers/' . $server_id . '/databases/' . $database_id, null, true);
+            return $this->request('GET', '/api/application/servers/' . $server_id . '/databases/' . $database_id, null, true, $includes);
         } catch(PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;

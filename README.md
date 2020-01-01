@@ -233,8 +233,8 @@ $nests = $panel->nests->eggs(int $nest_id);
 // Get a single egg from a nest
 // Returns a single Egg object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$egg = $nest->egg(int $egg_id, string[] $includes);
-$egg = $panel->nests->egg(int $nest_id, int $egg_id, string[] $includes);
+$egg = $nest->egg(int $egg_id, string[] $includes = ['variabled']);
+$egg = $panel->nests->egg(int $nest_id, int $egg_id, string[] $includes = ['variables']);
 ```
 
 ### Exceptions
