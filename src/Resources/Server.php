@@ -2,6 +2,10 @@
 
 namespace VizuaaLOG\Pterodactyl\Resources;
 
+use GuzzleHttp\Exception\GuzzleException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
+use VizuaaLOG\Pterodactyl\Managers\ServerManager;
+
 class Server extends Resource
 {
     /**
@@ -9,9 +13,10 @@ class Server extends Resource
      *
      * @param array $values
      *
-     * @return \VizuaaLOG\Pterodactyl\Resources\Server
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Server
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function update($values)
     {
@@ -32,9 +37,10 @@ class Server extends Resource
      *
      * @param array $values
      *
-     * @return \VizuaaLOG\Pterodactyl\Resources\Server
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Server
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function updateBuild($values)
     {
@@ -55,9 +61,9 @@ class Server extends Resource
     /**
      * Trigger a rebuild of the server
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function rebuild()
     {
@@ -69,9 +75,10 @@ class Server extends Resource
      *
      * @param array $values
      *
-     * @return \VizuaaLOG\Pterodactyl\Resources\Server
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Server
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function updateStartup($values)
     {
@@ -92,9 +99,9 @@ class Server extends Resource
     /**
      * Suspend a server
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function suspend()
     {
@@ -104,9 +111,9 @@ class Server extends Resource
     /**
      * Unsuspend a server
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function unsuspend()
     {
@@ -116,9 +123,9 @@ class Server extends Resource
     /**
      * Trigger a reinstall of the server
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function reinstall()
     {
@@ -128,57 +135,58 @@ class Server extends Resource
     /**
      * Start this server
      *
-     * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function start()
     {
-        $this->pterodactyl->servers->start($this->identifier);
+        return $this->pterodactyl->servers->start($this->identifier);
     }
 
     /**
      * Stop this server
      *
-     * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function stop()
     {
-        $this->pterodactyl->servers->stop($this->identifier);
+        return $this->pterodactyl->servers->stop($this->identifier);
     }
 
     /**
      * Stop this server
      *
-     * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function restart()
     {
-        $this->pterodactyl->servers->restart($this->identifier);
+        return $this->pterodactyl->servers->restart($this->identifier);
     }
 
     /**
      * Stop this server
      *
-     * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function kill()
     {
-        $this->pterodactyl->servers->kill($this->identifier);
+        return $this->pterodactyl->servers->kill($this->identifier);
     }
 
     /**
      * Get this server's utilization
      *
-     * @return Stats|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Stats
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function utilization()
     {
@@ -189,20 +197,23 @@ class Server extends Resource
      * Send a command to the server.
      *
      * @param string $command
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     *
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function sendCommand($command)
     {
-        $this->pterodactyl->servers->sendCommand($this->identifier, $command);
+        return $this->pterodactyl->servers->sendCommand($this->identifier, $command);
     }
 
     /**
      * Get this server's databases.
      *
-     * @return Database|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return ServerDatabase[]
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function databases()
     {
@@ -214,9 +225,10 @@ class Server extends Resource
      *
      * @param int $database_id
      *
-     * @return Database|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return ServerDatabase
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function database($database_id)
     {
@@ -228,9 +240,10 @@ class Server extends Resource
      *
      * @param array $values
      *
-     * @return Database|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return ServerDatabase
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function createDatabase($values)
     {
@@ -242,9 +255,9 @@ class Server extends Resource
      *
      * @param int $database_id
      *
-     * @return null|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function resetDatabasePassword($database_id)
     {
@@ -256,9 +269,9 @@ class Server extends Resource
      *
      * @param int $database_id
      *
-     * @return null|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function deleteDatabase($database_id)
     {
@@ -270,9 +283,9 @@ class Server extends Resource
      *
      * @param bool $force
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function delete($force = false)
     {

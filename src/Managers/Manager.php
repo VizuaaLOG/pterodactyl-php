@@ -2,27 +2,25 @@
 
 namespace VizuaaLOG\Pterodactyl\Managers;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use VizuaaLOG\Pterodactyl\Pterodactyl;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\BadResponseException;
 use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
+use VizuaaLOG\Pterodactyl\Resources\Server;
 
 class Manager
 {
-    /**
-     * @var \VizuaaLOG\Pterodactyl\Pterodactyl
-     */
+    /** @var Pterodactyl */
     protected $pterodactyl;
 
-    /**
-     * An instance of the http client.
-     *
-     * @var \GuzzleHttp\Client
-     */
+    /** @var Client */
     protected $http;
 
+    /** @param Pterodactyl $pterodactyl */
     public function __construct($pterodactyl)
     {
         $this->pterodactyl = $pterodactyl;
@@ -34,12 +32,13 @@ class Manager
      *
      * @param string $method
      * @param string $uri
-     * @param null   $values
-     * @param bool   $asResource
+     * @param null|array $values
+     * @param bool $asResource
+     * @param array $includes
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return mixed
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     protected function request($method, $uri, $values = null, $asResource = true, $includes = [])
     {
@@ -61,9 +60,9 @@ class Manager
     /**
      * Convert a guzzle response into the correct resources
      *
-     * @param \GuzzleHttp\Psr7\Response $response
+     * @param Response $response
      *
-     * @return \VizuaaLOG\Pterodactyl\Managers\ServerManager|array
+     * @return mixed
      */
     protected function transformResponse(Response $response)
     {
@@ -79,10 +78,8 @@ class Manager
     /**
      * Transform an API response.
      *
-     * @param $object
-     * @param $createResource
-     *
-     * @return array|\VizuaaLOG\Pterodactyl\Resources\Server
+     * @param array $object
+     * @return mixed
      */
     protected function transformObject($object)
     {
@@ -116,6 +113,12 @@ class Manager
         return $resource;
     }
 
+    /**
+     * Process and throw the exception.
+     *
+     * @param BadResponseException $e
+     * @throws PterodactylRequestException
+     */
     public function throwException(BadResponseException $e)
     {
         $error = json_decode($e->getResponse()->getBody());

@@ -2,21 +2,22 @@
 
 namespace VizuaaLOG\Pterodactyl\Managers;
 
+use GuzzleHttp\Exception\GuzzleException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
+use VizuaaLOG\Pterodactyl\Resources\Egg;
 use VizuaaLOG\Pterodactyl\Resources\Nest;
 
 class NestManager extends Manager
 {
-    /**
-     * @var string The resource this manager uses.
-     */
+    /** @var string */
     protected static $resource = Nest::class;
 
     /**
      * Get all nests available.
      *
-     * @return array<\VizuaaLOG\Pterodactyl\Resources\Nest>
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Nest[]
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function all()
     {
@@ -29,15 +30,15 @@ class NestManager extends Manager
      * @param int $nest_id
      * @param array $includes
      *
-     * @return bool|array|\VizuaaLOG\Pterodactyl\Resources\Nest
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Nest|false
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function get($nest_id, $includes = [])
     {
         try {
             return $this->request('GET', '/api/application/nests/' . $nest_id, null, true, $includes);
-        } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
+        } catch(PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;
             }
@@ -51,9 +52,9 @@ class NestManager extends Manager
      *
      * @param int $nest_id
      *
-     * @return array<\VizuaaLOG\Pterodactyl\Resources\Egg>
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Egg[]
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function eggs($nest_id)
     {
@@ -66,15 +67,15 @@ class NestManager extends Manager
      * @param int $nest_id
      * @param int $egg_id
      *
-     * @return bool|array|\VizuaaLOG\Pterodactyl\Resources\Egg
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Egg|false
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function egg($nest_id, $egg_id)
     {
         try {
             return $this->request('GET', '/api/application/nests/' . $nest_id . '/eggs/' . $egg_id, null, true, ['variables']);
-        } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
+        } catch(PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;
             }

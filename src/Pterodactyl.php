@@ -13,72 +13,44 @@ use VizuaaLOG\Pterodactyl\Managers\UserManager;
 
 class Pterodactyl
 {
-    /**
-     * The GuzzleHTTP Client instance
-     *
-     * @var \GuzzleHttp\Client
-     */
+    /** @var Client */
     public $http;
 
-    /**
-     * Instance of the server manager
-     *
-     * @var ServerManager
-     */
+    /** @var ServerManager */
     public $servers;
 
-    /**
-     * Instance of the user manager
-     *
-     * @var UserManager
-     */
+    /** @var UserManager */
     public $users;
 
-    /**
-     * Instance of the node manager
-     *
-     * @var NodeManager
-     */
+    /** @var NodeManager */
     public $nodes;
 
-    /**
-     * Instance of the location manager
-     *
-     * @var LocationManager
-     */
+    /** @var LocationManager */
     public $locations;
 
-    /**
-     * Instance of the nest manager
-     *
-     * @var NestManager
-     */
+    /** @var NestManager */
     public $nests;
 
-    /**
-     * API Key used for requests.
-     *
-     * @var string
-     */
+    /** @var string */
     protected $api_key;
 
-    /**
-     * Base URI for API requests
-     *
-     * @var string
-     */
+    /** @var string */
     protected $base_uri;
 
-    /**
-     * Number of seconds before a request times out.
-     *
-     * @var int
-     */
+    /** @var int */
     protected $timeout;
 
     /** @var string */
     public $api_type;
 
+    /**
+     * @param string $api_key
+     * @param string $base_uri
+     * @param string $type
+     *
+     * @throws InvalidApiKeyException
+     * @throws InvalidBaseUriException
+     */
     public function __construct($api_key, $base_uri, $type = 'application')
     {
         if (!$api_key) {
@@ -138,7 +110,7 @@ class Pterodactyl
     /**
      * Set the client to a new GuzzleHTTP Client instance.
      *
-     * @param \GuzzleHttp\Client $client
+     * @param Client $client
      *
      * @return void
      */

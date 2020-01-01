@@ -2,14 +2,18 @@
 
 namespace VizuaaLOG\Pterodactyl\Resources;
 
+use GuzzleHttp\Exception\GuzzleException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
+
 class Nest extends Resource
 {
     /**
      * Get this nests eggs.
      *
-     * @return array<Egg>
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Egg[]
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function eggs()
     {
@@ -22,8 +26,9 @@ class Nest extends Resource
      * @param int $egg_id
      *
      * @return Egg
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function egg($egg_id)
     {

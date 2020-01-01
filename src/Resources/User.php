@@ -2,6 +2,9 @@
 
 namespace VizuaaLOG\Pterodactyl\Resources;
 
+use GuzzleHttp\Exception\GuzzleException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
+
 class User extends Resource
 {
     /**
@@ -9,9 +12,10 @@ class User extends Resource
      *
      * @param array $values
      *
-     * @return \VizuaaLOG\Pterodactyl\Resources\Server
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return User
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function update($values)
     {
@@ -32,9 +36,9 @@ class User extends Resource
     /**
      * Delete a user
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function delete()
     {

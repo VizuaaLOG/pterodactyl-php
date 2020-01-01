@@ -2,6 +2,10 @@
 
 namespace VizuaaLOG\Pterodactyl\Resources;
 
+use GuzzleHttp\Exception\GuzzleException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
+use VizuaaLOG\Pterodactyl\Managers\ServerManager;
+
 class Node extends Resource
 {
     /**
@@ -9,9 +13,10 @@ class Node extends Resource
      *
      * @param array $values
      *
-     * @return \VizuaaLOG\Pterodactyl\Resources\Node
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Node
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function update($values)
     {
@@ -43,9 +48,10 @@ class Node extends Resource
     /**
      * Update an existing node's details
      *
-     * @return array<\VizuaaLOG\Pterodactyl\Resources\Allocation>
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Allocation[]
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function allocations()
     {
@@ -57,9 +63,10 @@ class Node extends Resource
      *
      * @param array $values
      *
-     * @return \VizuaaLOG\Pterodactyl\Resources\Allocation
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Allocation
+     *
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function createAllocation($values)
     {
@@ -71,9 +78,9 @@ class Node extends Resource
      *
      * @param int $allocation_id
      *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function deleteAllocation($allocation_id)
     {
@@ -83,9 +90,9 @@ class Node extends Resource
     /**
      * Delete a node
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     *
+     * @throws GuzzleException
      */
     public function delete()
     {

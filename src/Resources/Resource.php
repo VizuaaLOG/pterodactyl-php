@@ -7,14 +7,14 @@ use VizuaaLOG\Pterodactyl\Pterodactyl;
 class Resource
 {
     /**
-     * @var \VizuaaLOG\Pterodactyl\Pterodactyl|null
+     * @var Pterodactyl|null
      */
     protected $pterodactyl;
 
     /**
      * Create a new resource instance.
      *
-     * @param array       $attributes
+     * @param array $attributes
      * @param Pterodactyl $pterodactyl
      *
      * @return void
@@ -28,7 +28,7 @@ class Resource
     /**
      * Fill the resource with the array of attributes.
      *
-     * @param array $attributes
+     * @param mixed $attributes
      *
      * @return void
      */

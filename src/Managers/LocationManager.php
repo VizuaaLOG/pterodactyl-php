@@ -2,21 +2,21 @@
 
 namespace VizuaaLOG\Pterodactyl\Managers;
 
+use GuzzleHttp\Exception\GuzzleException;
+use VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException;
 use VizuaaLOG\Pterodactyl\Resources\Location;
 
 class LocationManager extends Manager
 {
-    /**
-     * @var string The resource this manager uses.
-     */
+    /** @var string */
     protected static $resource = Location::class;
 
     /**
      * Get all servers available.
      *
-     * @return array<\VizuaaLOG\Pterodactyl\Resources\Location>
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Location[]
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function all()
     {
@@ -27,17 +27,17 @@ class LocationManager extends Manager
      * Get a single server object.
      *
      * @param int $location_id
-     * @param array $includes
+     * @param string[] $includes
      *
-     * @return bool|array|\VizuaaLOG\Pterodactyl\Resources\Location
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Location|false
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function get($location_id, $includes = [])
     {
         try {
             return $this->request('GET', '/api/application/locations/' . $location_id, null, true, $includes);
-        } catch(\VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException $exception) {
+        } catch(PterodactylRequestException $exception) {
             if(strstr($exception->getMessage(), 'NotFoundHttpException') !== false) {
                 return false;
             }
@@ -51,9 +51,9 @@ class LocationManager extends Manager
      *
      * @param array $values
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Resources\Location
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return Location
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function create($values)
     {
@@ -63,13 +63,13 @@ class LocationManager extends Manager
     /**
      * Update a server's configuration
      *
-     * @param int   $location_id
+     * @param int $location_id
      * @param array $values
      *
-     * @return array|Location
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return Location
+     * @throws GuzzleException
      *
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @throws PterodactylRequestException
      */
     public function update($location_id, $values)
     {
@@ -81,12 +81,18 @@ class LocationManager extends Manager
      *
      * @param int $location_id
      *
-     * @return array|\VizuaaLOG\Pterodactyl\Managers\ServerManager
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \VizuaaLOG\Pterodactyl\Exceptions\PterodactylRequestException
+     * @return bool
+     * @throws GuzzleException
+     * @throws PterodactylRequestException
      */
     public function delete($location_id)
     {
-        return $this->request('DELETE', '/api/application/locations/' . $location_id);
+        try {
+            $this->request('DELETE', '/api/application/locations/' . $location_id);
+
+            return true;
+        } catch(PterodactylRequestException $exception) {
+            return false;
+        }
     }
 }
