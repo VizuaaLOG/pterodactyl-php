@@ -1,5 +1,5 @@
 {
-    "name": "vizuaalog/pterodactyl-api",
+    "name": "vizuaalog/pterodactyl-php",
     "license": "MIT",
     "description": "An unofficial PHP API client for the Pterodactyl game panel.",
     "type": "library",
