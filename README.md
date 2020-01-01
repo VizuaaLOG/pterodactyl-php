@@ -38,10 +38,10 @@ $servers = $panel->servers->all();
 // Returns a single Server object
 // If using the client mode, then this should be the string identifier instead
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$server = $panel->servers->get(int|string $server_id, array $includes);
+$server = $panel->servers->get(int|string $server_id, string[] $includes);
 
 // Returns a single Server object
-$server = $panel->servers->getByExternalId(string $external_id, array $includes);
+$server = $panel->servers->getByExternalId(string $external_id, string[] $includes);
 
 // Returns a single Server object if successful, throws exception on error
 $server = $panel->servers->create(array $data);
@@ -122,12 +122,12 @@ $users = $panel->users->all();
 // Get a single user
 // Returns a single User object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$user = $panel->users->get(int $user_id, array $includes);
+$user = $panel->users->get(int $user_id, string[] $includes);
 
 // Get a single user by external id
 // Returns a single User object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$user = $panel->users->getByExternalId(string $external_id, array $includes);
+$user = $panel->users->getByExternalId(string $external_id, string[] $includes);
 
 // Create a user
 // Returns the created User object
@@ -154,7 +154,7 @@ $nodes = $panel->nodes->all();
 // Get a single node
 // Returns a single Node object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$node = $panel->nodes->get(int $node_id, array $includes);
+$node = $panel->nodes->get(int $node_id, string[] $includes);
 
 // Create a node
 // Returns the created Node object
@@ -196,7 +196,7 @@ $locations = $panel->locations->all();
 // Get a single location
 // Returns a single Location object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$location = $panel->locations->get(int $location_id, array $includes);
+$location = $panel->locations->get(int $location_id, string[] $includes);
 
 // Create a location
 // Returns the created Location object
@@ -223,7 +223,7 @@ $nests = $panel->nests->all();
 // Get a single nest
 // Returns a single Nest object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$nest = $panel->nests->get(int $nest_id, array $includes);
+$nest = $panel->nests->get(int $nest_id, string[] $includes);
 
 // Get all eggs for a nest
 // Returns an array of Egg objects
@@ -233,8 +233,8 @@ $nests = $panel->nests->eggs(int $nest_id);
 // Get a single egg from a nest
 // Returns a single Egg object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$egg = $nest->egg(int $egg_id, array $includes);
-$egg = $panel->nests->egg(int $nest_id, int $egg_id, array $includes);
+$egg = $nest->egg(int $egg_id, string[] $includes);
+$egg = $panel->nests->egg(int $nest_id, int $egg_id, string[] $includes);
 ```
 
 ### Exceptions
