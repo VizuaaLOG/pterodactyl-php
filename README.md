@@ -16,7 +16,7 @@ Everything starts with the primary `Pterodactyl` class:
 ```php
 use VizuaaLOG\Pterodactyl\Pterodactyl;
 
-$panel = new Pterodactyl($api_key, $base_uri, $type);
+$panel = new Pterodactyl(string $api_key, string $base_uri, string $type = 'application');
 ```
 
 + `$api_key` (string) - This should be the API key generated either via the admin section of the panel or the user section
@@ -38,78 +38,78 @@ $servers = $panel->servers->all();
 // Returns a single Server object
 // If using the client mode, then this should be the string identifier instead
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$server = $panel->servers->get(1, $includes);
+$server = $panel->servers->get(int|string $server_id, array $includes);
 
 // Returns a single Server object
-$server = $panel->servers->getByExternalId('external_id', $includes);
+$server = $panel->servers->getByExternalId(string $external_id, array $includes);
 
 // Returns a single Server object if successful, throws exception on error
-$server = $panel->servers->create($data);
+$server = $panel->servers->create(array $data);
 
 // Update a server's details
 // Returns the updated Server object
-$server->update($data);
-$panel->servers->update($server_id, $data);
+$server->update(array $data);
+$panel->servers->update(int $server_id, array $data);
 
 // Update a server's build configuration
 // Returns the updated Server object
-$server->updateBuild($data);
-$panel->servers->updateBuild($server_id, $data);
+$server->updateBuild(array $data);
+$panel->servers->updateBuild(int $server_id, array $data);
 
 // Update a server's startup configuration
 // Returns the updated server object
-$server->updateStartup($data);
-$panel->servers->updateStartup($server_id, $data);
+$server->updateStartup(array $data);
+$panel->servers->updateStartup(int $server_id, array $data);
 
 // Suspend a server
 // Returns true if successful, false otherwise
 $server->suspend();
-$panel->servers->suspend($server_id);
+$panel->servers->suspend(int $server_id);
 
 // Unsuspend a server
 // Returns true if successful, false otherwise
 $server->unsuspend();
-$panel->servers->unsuspend($server_id);
+$panel->servers->unsuspend(int $server_id);
 
 // Reinstall a server
 // Returns true if successful, false otherwise
 $server->reinstall();
-$panel->servers->reinstall($server_id);
+$panel->servers->reinstall(int $server_id);
 
 // Rebuild a server
 // Returns true is successful, false otherwise
 $server->rebuild();
-$panel->servers->rebuild($server_id);
+$panel->servers->rebuild(int $server_id);
 
 // Delete a server
 // Returns true if successful, false otherwise
-$server->delete($force);
-$panel->servers->delete($server_id, $force);
+$server->delete(bool $force = false);
+$panel->servers->delete(int $server_id, bool $force = false);
 
 // Get all databases for a server
 // Returns an array of ServerDatabase objects
 $server->databases();
-$panel->servers->databases($server_id);
+$panel->servers->databases(int $server_id);
 
 // Get a database for a server
 // Returns a single ServerDatabase object
-$server->database($database_id);
-$panel->servers->database($server_id, $database_id);
+$server->database(int $database_id);
+$panel->servers->database(int $server_id, int $database_id);
 
 // Create a database for a server
 // Returns a single ServerDatabase object
-$server->createDatabase($data);
-$panel->servers->createDatabase($server_id, $data);
+$server->createDatabase(array $data);
+$panel->servers->createDatabase(int $server_id, array $data);
 
 // Reset a database's password
 // Returns true on success, false otherwise
-$server->resetDatabasePassword($database_id);
-$panel->servers->resetDatabasePassword($server_id, $database_id);
+$server->resetDatabasePassword(int $database_id);
+$panel->servers->resetDatabasePassword(int $server_id, int $database_id);
 
 // Delete a database
 // Returns true on success, false otherwise
-$server->deleteDatabase($database_id);
-$panel->servers->deleteDatabase($database_id);
+$server->deleteDatabase(int $database_id);
+$panel->servers->deleteDatabase(int $database_id);
 ```
 
 ### User
@@ -122,26 +122,26 @@ $users = $panel->users->all();
 // Get a single user
 // Returns a single User object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$user = $panel->users->get(1, $includes);
+$user = $panel->users->get(int $user_id, array $includes);
 
 // Get a single user by external id
 // Returns a single User object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$user = $panel->users->getByExternalId(1, $includes);
+$user = $panel->users->getByExternalId(string $external_id, array $includes);
 
 // Create a user
 // Returns the created User object
-$user = $panel->users->create($data);
+$user = $panel->users->create(array $data);
 
 // Edit a user
 // Returns the updated User object
-$user->update($data);
-$panel->users->update($user_id, $data);
+$user->update(array $data);
+$panel->users->update(int $user_id, array $data);
 
 // Delete a user
 // Returns true on success, false otherwise
 $user->delete();
-$panel->users->delete($user_id);
+$panel->users->delete(int $user_id);
 ```
 
 ### Nodes
@@ -154,36 +154,36 @@ $nodes = $panel->nodes->all();
 // Get a single node
 // Returns a single Node object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$node = $panel->nodes->get(1, $includes);
+$node = $panel->nodes->get(int $node_id, array $includes);
 
 // Create a node
 // Returns the created Node object
-$node = $panel->nodes->create($data);
+$node = $panel->nodes->create(array $data);
 
 // Edit a node
 // Returns the updated Node object
-$node->update($data);
-$panel->nodes->update($node_id, $data);
+$node->update(array $data);
+$panel->nodes->update(int $node_id, array $data);
 
 // Delete a node
 // Returns true on success, false otherwise
 $node->delete();
-$panel->nodes->delete($node_id);
+$panel->nodes->delete(int $node_id);
 
 // Get a node's allocations
 // Returns an array of Allocation objects
 $allocations = $node->allocations();
-$allocations = $panel->nodes->allocations($node_id);
+$allocations = $panel->nodes->allocations(int $node_id);
 
 // Create a new allocation
 // Returns the newly created Allocation object
-$allocation = $node->createAllocation($data);
-$allocation = $panel->nodes->createAllocation($node_id, $data);
+$allocation = $node->createAllocation(array $data);
+$allocation = $panel->nodes->createAllocation(int $node_id, array $data);
 
 // Delete an allocation
 // Returns true on success, false otherwise
-$node->deleteAllocation($allocation_id);
-$panel->nodes->deleteAllocation($node_id, $allocation_id);
+$node->deleteAllocation(int $allocation_id);
+$panel->nodes->deleteAllocation(int $node_id, int $allocation_id);
 ```
 
 ### Locations
@@ -196,21 +196,21 @@ $locations = $panel->locations->all();
 // Get a single location
 // Returns a single Location object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$location = $panel->locations->get(1, $includes);
+$location = $panel->locations->get(int $location_id, array $includes);
 
 // Create a location
 // Returns the created Location object
-$location = $panel->locations->create($data);
+$location = $panel->locations->create(array $data);
 
 // Edit a location
 // Returns the updated Location object
-$location->update($data);
-$panel->locations->update($location_id, $data);
+$location->update(array $data);
+$panel->locations->update(int $location_id, array $data);
 
 // Delete a location
 // Returns true on success, false otherwise
 $location->delete();
-$panel->locations->delete($location_id);
+$panel->locations->delete(int $location_id);
 ```
 
 ### Nests/Eggs
@@ -223,18 +223,18 @@ $nests = $panel->nests->all();
 // Get a single nest
 // Returns a single Nest object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$nest = $panel->nests->get(1, $includes);
+$nest = $panel->nests->get(int $nest_id, array $includes);
 
 // Get all eggs for a nest
 // Returns an array of Egg objects
 $eggs = $nest->eggs();
-$nests = $panel->nests->eggs($nest_id);
+$nests = $panel->nests->eggs(int $nest_id);
 
 // Get a single egg from a nest
 // Returns a single Egg object
 // $includes is an array of strings representing additional data to include in the same request, see Pterodactyl API docs for these.
-$egg = $nest->egg($egg_id, $includes);
-$egg = $panel->nests->egg(1, $includes);
+$egg = $nest->egg(int $egg_id, array $includes);
+$egg = $panel->nests->egg(int $nest_id, int $egg_id, array $includes);
 ```
 
 ### Exceptions
